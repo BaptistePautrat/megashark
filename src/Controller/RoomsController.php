@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\I18n\Time;
 
 /**
  * Rooms Controller
@@ -23,7 +24,10 @@ class RoomsController extends AppController
 
         $this->set(compact('rooms'));
         $this->set('_serialize', ['rooms']);
+        $this->set('rooms', $this->paginate($this->Rooms));
     }
+    
+    
 
     /**
      * View method
@@ -39,7 +43,12 @@ class RoomsController extends AppController
         ]);
 
         $this->set('room', $room);
-        $this->set('_serialize', ['room']);
+        $this->set('_serialize', ['room']);  
+        
+        $time=new Time();
+        $showtimess =$this->Rooms->Showtimes->find()->where(['room_id ' => $id, 'start >' => $time ])->contain(['Rooms','Movies']);
+        $this->set('showtimes', $showtimess);
+      
     }
 
     /**
@@ -61,6 +70,8 @@ class RoomsController extends AppController
         }
         $this->set(compact('room'));
         $this->set('_serialize', ['room']);
+        
+         
     }
 
     /**
