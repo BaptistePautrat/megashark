@@ -141,8 +141,8 @@ class ShowtimesController extends AppController
         $time= new Time('monday this week ');
         $timeEnd = new Time();
         $timeEnd->modify('monday next week ');
-        $showtimess =$this->Rooms->Showtimes->find()
-            ->where(['room_id ' => $id, 'start >' => $time, 'start <' =>$timeEnd])
+        $showtimess =$this->Showtimes->find()
+            ->where(['room_name' => $rooms, 'start >' => $time, 'start <' =>$timeEnd])
             ->contain(['Rooms','Movies']);
             
         $movies = array();   
