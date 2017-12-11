@@ -2,6 +2,8 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\I18n\Time;
+
 
 /**
  * Showtimes Controller
@@ -25,7 +27,10 @@ class ShowtimesController extends AppController
         ];
         
     
-        $this->set('showtimes', $this->paginate($this->Showtimes));
+    $showtimes = $this->paginate($this->Showtimes);
+        $this->set(compact('showtimes'));
+        $this->set('_serialize', ['showtimes']);
+        //$this->set('showtimes', $this->paginate($this->Showtimes));
         
         
         /*
@@ -72,6 +77,8 @@ class ShowtimesController extends AppController
             $this->Flash->error(__('The showtime could not be saved. Please, try again.'));
         }
         //showtimes
+          $movies = $this->Showtimes->Movies->find('list', ['limit' => 200]);
+        $rooms = $this->Showtimes->Rooms->find('list', ['limit' => 200]);
         $this->set(compact('rooms', 'showtime','movies'));
         $this->set('_serialize', ['rooms']);
     }
@@ -97,6 +104,8 @@ class ShowtimesController extends AppController
             }
             $this->Flash->error(__('The showtime could not be saved. Please, try again.'));
         }
+        $movies = $this->Showtimes->Movies->find('list', ['limit' => 200]);
+        $rooms = $this->Showtimes->Rooms->find('list', ['limit' => 200]);
         $this->set(compact('showtime'));
         $this->set('_serialize', ['showtime']);
     }
@@ -119,5 +128,39 @@ class ShowtimesController extends AppController
         }
 
         return $this->redirect(['action' => 'index']);
+    }
+    
+    public function planning()
+    {
+        $planning = $this->Showtimes->newEntity();
+       $rooms = $this->Showtimes->Rooms->find('list', ['limit' => 200]);
+       
+       $this->set('rooms', $rooms);
+       $this->set('planning', $planning);
+      
+        $time= new Time('monday this week ');
+        $timeEnd = new Time();
+        $timeEnd->modify('monday next week ');
+        $showtimess =$this->Rooms->Showtimes->find()
+            ->where(['room_id ' => $id, 'start >' => $time, 'start <' =>$timeEnd])
+            ->contain(['Rooms','Movies']);
+            
+        $movies = array();   
+        foreach ($showtimess as $showtime){
+            if($showtime->start->format('N') == 0)
+                $movies[6][] = $showtime;
+            else
+                $movies[$showtime->start->format('N')-1][] = $showtime;
+        }
+       // $this->set('showtimes', $showtimess);
+       
+           $this->set('room', $room);
+        $this->set('_serialize', ['room']);  
+        
+       
+        $this->set('showtimes',$movies);
+        $this->set('room', $room);
+        $this->set('_serialize', ['room']);
+    
     }
 }

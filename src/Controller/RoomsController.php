@@ -45,10 +45,26 @@ class RoomsController extends AppController
         $this->set('room', $room);
         $this->set('_serialize', ['room']);  
         
-        $time=new Time();
-        $showtimess =$this->Rooms->Showtimes->find()->where(['room_id ' => $id, 'start >' => $time ])->contain(['Rooms','Movies']);
-        $this->set('showtimes', $showtimess);
-      
+        $time= new Time('monday this week ');
+        $timeEnd = new Time();
+        $timeEnd->modify('monday next week ');
+        $showtimess =$this->Rooms->Showtimes->find()
+            ->where(['room_id ' => $id, 'start >' => $time, 'start <' =>$timeEnd])
+            ->contain(['Rooms','Movies']);
+            
+        $movies = array();   
+        foreach ($showtimess as $showtime){
+            if($showtime->start->format('N') == 0)
+                $movies[6][] = $showtime;
+            else
+                $movies[$showtime->start->format('N')-1][] = $showtime;
+        }
+       // $this->set('showtimes', $showtimess);
+       
+        $this->set('showtimes',$movies);
+        $this->set('room', $room);
+        $this->set('_serialize', ['room']);
+        
     }
 
     /**

@@ -42,23 +42,43 @@
    
         
    
-      <?php foreach ($showtimes as $showtime){
-       ?>
-      <tr>
-          <td> 
-          <?php echo  $showtime->movie->name; ?> 
-          </br></td>
-          <td>
-          <?php echo  $showtime->start; ?> 
-          </br></td>
-          <td>
-          <?php echo  $showtime->end; ?>  
-          <br></td>
-        
-   
-      </tr>
-
-    <?php  }?>
+    
+    
+    
+    <table>
+        <thead>
+        <tr>
+            <th scope="col">L</th>
+            <th scope="col">M</th>
+            <th scope="col">M</th>
+            <th scope="col">J</th>
+            <th scope="col">V</th>
+            <th scope="col">S</th>
+            <th scope="col">D</th>
+        </tr>
+        </thead>
+    <table>
+    <div id="contentBox" style="margin:0px auto; width:70%">
+        <?php for($i=0;$i<7;$i++): ?>
+            <table style="float:left; margin:0; width:14%;">
+                <?php 
+                    if(isset($showtimes[$i])):
+                        foreach($showtimes[$i] as $showtime): ?>
+                        <tr>
+                            <td>
+                                <?= h($showtime->movie->name); ?>
+                                <?= h($showtime->start); ?>
+                                <?= h($showtime->end); ?>
+                            </td>
+                        </tr>        
+                      <?php endforeach;
+                    else:
+                        echo "<tr><td> Aucune seance ce jour</td></tr>";
+                endif;?>
+            </table>
+        <?php endfor;  ?>      
+    </div>
+</div>
   
            
 </div>
